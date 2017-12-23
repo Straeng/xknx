@@ -226,13 +226,14 @@ class KNXModule(object):
     def create_exposures(self):
         """Create exposures."""
         exposures = []
-        for to_expose in self.config[DOMAIN][CONF_XKNX_EXPOSE]:
-            expose_type = to_expose.get(CONF_XKNX_EXPOSE_TYPE)
-            expose_entity_id = to_expose.get(CONF_XKNX_EXPOSE_ENTITY_ID)
-            expose_address = to_expose.get(CONF_XKNX_EXPOSE_ADDRESS)
-            exposure = KNXExpose(self.hass, expose_type,
-                                 expose_entity_id, expose_address)
-            exposures.append(exposure)
+        if CONF_XKNX_EXPOSE in self.config[DOMAIN]:
+            for to_expose in self.config[DOMAIN][CONF_XKNX_EXPOSE]:
+                expose_type = to_expose.get(CONF_XKNX_EXPOSE_TYPE)
+                expose_entity_id = to_expose.get(CONF_XKNX_EXPOSE_ENTITY_ID)
+                expose_address = to_expose.get(CONF_XKNX_EXPOSE_ADDRESS)
+                exposure = KNXExpose(self.hass, expose_type,
+                                     expose_entity_id, expose_address)
+                exposures.append(exposure)
         return exposures
 
     @asyncio.coroutine
