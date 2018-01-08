@@ -1,4 +1,10 @@
-"""Implementation of Basic KNX Floats."""
+"""
+Implementation of KNX Float-values.
+
+They can be either 2 or 4 bytes, and correspond to the the following KDN DPTs.
+    9.yyy  2-byte/octet float, e.g. temperature
+    14.yyy 4-byte/octet float, IEEE 754, i.e. Electrical measurements: current, power
+"""
 
 import struct
 from xknx.exceptions import ConversionError
@@ -6,8 +12,7 @@ from xknx.exceptions import ConversionError
 from .dpt import DPTBase
 
 
-
-class DPTFloat(DPTBase):
+class DPT2ByteFloat(DPTBase):
     """
     Abstraction for KNX 2 Octet Floating Point Numbers.
 
@@ -73,7 +78,7 @@ class DPTFloat(DPTBase):
         return cls.value_min <= value <= cls.value_max
 
 
-class DPTIEEE754(DPTBase):
+class DPT4ByteFloat(DPTBase):
     """
     Abstraction for KNX 4 Octet Floating Point Numbers, with a maximum usable range as specified in IEEE 754.
     The largest positive finite float literal is 3.40282347e+38f.
@@ -105,11 +110,11 @@ class DPTIEEE754(DPTBase):
             raise ConversionError(value)
 
 
-class DPTTemperature(DPTFloat):
+class DPTTemperature(DPT2ByteFloat):
     """
     Abstraction for KNX 2 Octet Floating Point Numbers.
 
-    DPT 9.001
+    DPT 9.001 DPT_Value_Temp
     """
 
     value_min = -273
@@ -118,11 +123,11 @@ class DPTTemperature(DPTFloat):
     resolution = 1
 
 
-class DPTLux(DPTFloat):
+class DPTLux(DPT2ByteFloat):
     """
     Abstraction for KNX 2 Octet Floating Point Numbers.
 
-    DPT 9.004
+    DPT 9.004 DPT_Value_Lux
     """
 
     value_min = 0
@@ -131,11 +136,11 @@ class DPTLux(DPTFloat):
     resolution = 1
 
 
-class DPTWsp(DPTFloat):
+class DPTWsp(DPT2ByteFloat):
     """
     Abstraction for KNX 2 Octet Floating Point Numbers.
 
-    DPT 9.005
+    DPT 9.005 DPT_Value_Ws Speed (m/s)
     """
 
     value_min = 0
@@ -144,11 +149,11 @@ class DPTWsp(DPTFloat):
     resolution = 1
 
 
-class DPTHumidity(DPTFloat):
+class DPTHumidity(DPT2ByteFloat):
     """
     Abstraction for KNX 2 Octet Floating Point Numbers.
 
-    DPT 9.007
+    DPT 9.007 DPT_Value_Humidity
     """
 
     value_min = 0
@@ -157,71 +162,71 @@ class DPTHumidity(DPTFloat):
     resolution = 1
 
 
-class DPTElectricCurrent(DPTIEEE754):
+class DPTElectricCurrent(DPT4ByteFloat):
     """
-    DPT_Value_Electric_Current 14.019
+    DPT 14.019 DPT_Value_Electric_Current
     """
     unit = "A"
 
 
-class DPTElectricPotential(DPTIEEE754):
+class DPTElectricPotential(DPT4ByteFloat):
     """
-    DPT_Value_Electric_Potential 14.027
+    DPT 14.027 DPT_Value_Electric_Potential
     """
     unit = "V"
 
 
-class DPTEnergy(DPTIEEE754):
+class DPTEnergy(DPT4ByteFloat):
     """
-    DPT_Value_Energy 14.031
+    DPT 14.031 DPT_Value_Energy
     """
     unit = 'J'
 
 
-class DPTFrequency(DPTIEEE754):
+class DPTFrequency(DPT4ByteFloat):
     """
-    DPT_Value_Frequency 14.033
+    DPT 14.033 DPT_Value_Frequency
     """
     unit = 'Hz'
 
 
-class DPTHeatFlowRate(DPTIEEE754):
+class DPTHeatFlowRate(DPT4ByteFloat):
     """
-    DPT_Value_Heat_Flow_Rate 14.036
+    DPT 14.036 DPT_Value_Heat_Flow_Rate
     """
     unit = 'W'
 
 
-class DPTPhaseAngleRad(DPTIEEE754):
+class DPTPhaseAngleRad(DPT4ByteFloat):
     """
-    DPT_Value_Phase_Angle, Radiant 14.054
+    DPT 14.054 DPT_Value_Phase_Angle, Radiant
     """
     unit = 'rad'
 
 
-class DPTPhaseAngleDeg(DPTIEEE754):
+class DPTPhaseAngleDeg(DPT4ByteFloat):
     """
-    DPT_Value_Phase_Angle, Degree 14.055
+    14.055 DPT_Value_Phase_Angle, Degree
     """
     unit = '°'
 
 
-class DPTPower(DPTIEEE754):
+class DPTPower(DPT4ByteFloat):
     """
-    DPT_Value_Power 14.056
+    DPT 14.056 DPT_Value_Power
     """
     unit = "W"
 
 
-class DPTPowerFactor(DPTIEEE754):
+class DPTPowerFactor(DPT4ByteFloat):
     """
-    DPT_Value_Power 14.057
+    DPT 14.057 DPT_Value_Power
     """
     unit = ''
 
 
-class DPTSpeed(DPTIEEE754):
+class DPTSpeed(DPT4ByteFloat):
     """
-    DPT_Value_Speed 14.065
+    DPT 14.065 DPT_Value_Speed
     """
     unit = 'm/s'

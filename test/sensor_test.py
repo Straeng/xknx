@@ -5,7 +5,7 @@ from unittest.mock import Mock
 
 from xknx import XKNX
 from xknx.devices import Sensor
-from xknx.knx import Address, DPTArray, DPTBinary, Telegram, TelegramType
+from xknx.knx import GroupAddress, DPTArray, DPTBinary, Telegram, TelegramType
 
 
 class TestSensor(unittest.TestCase):
@@ -108,7 +108,6 @@ class TestSensor(unittest.TestCase):
         self.assertEqual(sensor.resolve_state(), 397)
         self.assertEqual(sensor.unit_of_measurement(), "W")
 
-    
     def test_str_electric_potential(self):
         """Test resolve state with voltage sensor."""
         xknx = XKNX(loop=self.loop)
@@ -121,7 +120,6 @@ class TestSensor(unittest.TestCase):
 
         self.assertEqual(round(sensor.resolve_state(), 2), 229.89)
         self.assertEqual(sensor.unit_of_measurement(), "V")
-        
 
     #
     # SYNC
@@ -140,7 +138,7 @@ class TestSensor(unittest.TestCase):
 
         telegram = xknx.telegrams.get_nowait()
         self.assertEqual(telegram,
-                         Telegram(Address('1/2/3'), TelegramType.GROUP_READ))
+                         Telegram(GroupAddress('1/2/3'), TelegramType.GROUP_READ))
 
     #
     # TEST PROCESS
@@ -153,7 +151,7 @@ class TestSensor(unittest.TestCase):
             'TestSensor',
             group_address='1/2/3')
 
-        telegram = Telegram(Address('1/2/3'))
+        telegram = Telegram(GroupAddress('1/2/3'))
         telegram.payload = DPTArray((0x01, 0x02, 0x03))
         self.loop.run_until_complete(asyncio.Task(sensor.process(telegram)))
         self.assertEqual(sensor.state, DPTArray((0x01, 0x02, 0x03)))
@@ -175,7 +173,7 @@ class TestSensor(unittest.TestCase):
             after_update_callback(device)
         sensor.register_device_updated_cb(async_after_update_callback)
 
-        telegram = Telegram(Address('1/2/3'))
+        telegram = Telegram(GroupAddress('1/2/3'))
         telegram.payload = DPTArray((0x01, 0x02, 0x03))
         self.loop.run_until_complete(asyncio.Task(sensor.process(telegram)))
         after_update_callback.assert_called_with(sensor)
